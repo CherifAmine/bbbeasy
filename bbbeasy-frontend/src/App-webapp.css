@@ -1515,12 +1515,6 @@ fieldset {
     width: 90px;
 }
 
-.input-status-presets{
-    background: transparent;
-    border: transparent;
-    width: 50px;
-}
-
 .space-color-picker-add-label {
     position: relative;
     display: inline-flex;
