@@ -431,10 +431,10 @@ const PresetsCol: React.FC<PresetColProps> = ({
                             <Form>
                                 {modalContent.map((item) => (
                                     <div key={modalTitle + '_' + item.name}>
-                                        <Form.Item label={
+                                        <Form.Item label={ item.name.length > 30 ?
                                             <div className="white-space">
                                                 {t(item.name)}
-                                            </div>
+                                            </div> : t(item.name)
                                         } name={item.name}>
                                             {item.type == 'bool' && (
                                                 <>
