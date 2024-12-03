@@ -8,16 +8,16 @@ declare(strict_types=1);
  * Copyright (c) 2022-2023 RIADVICE SUARL and by respective authors (see below).
  *
  * This program is free software; you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License as published by the Free Software
+ * terms of the GNU Affero General Public License as published by the Free Software
  * Foundation; either version 3.0 of the License, or (at your option) any later
  * version.
  *
- * BBBEasy is distributed in the hope that it will be useful, but WITHOUT ANY
+ * BBBeasy is distributed in the hope that it will be useful, but WITHOUT ANY
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
- * PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
+ * PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License along
- * with BBBEasy; if not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Affero General Public License along
+ * with BBBeasy. If not, see <https://www.gnu.org/licenses/>
  */
 
 namespace Actions\Account;
@@ -71,7 +71,7 @@ class ChangePassword extends BaseAction
                     $this->logger->error($errorMessage, ['error' => $common]);
                     $this->renderJson(['message' => $common], $responseCode);
                 } elseif ($user->verifyPassword($password)) {
-                    $message = 'New password old password must be different';
+                    $message = 'New and old password must be different';
                     $this->logger->error($errorMessage, ['error' => $message]);
                     $this->renderJson(['message' => $message], $responseCode);
                 } else {
@@ -96,24 +96,7 @@ class ChangePassword extends BaseAction
     {
         try {
             $user->password = $password;
-            $compliant      = SecurityUtils::isGdprCompliant($password);
-
-            $common = SecurityUtils::credentialsAreCommon($user->username, $user->email, $password);
-
-            if (true !== $compliant) {
-                $this->logger->error($errorMessage, ['error' => $compliant]);
-                $this->renderJson(['message' => $compliant], ResponseCode::HTTP_PRECONDITION_FAILED);
-
-                return;
-            }
-            if ($common) {
-                $this->logger->error($errorMessage, ['error' => $common]);
-                $this->renderJson(['message' => $common], ResponseCode::HTTP_PRECONDITION_FAILED);
-
-                return;
-            }
-
-            $user->status = UserStatus::ACTIVE;
+            $user->status   = UserStatus::ACTIVE;
             $resetToken->save();
             $user->save();
         } catch (\Exception $e) {

@@ -65,7 +65,8 @@
     "username-email-already-exist": "Username and Email already exist",
     "username-already-exist": "Username already exists",
     "email-already-exist": "Email already exists",
-    "welcome": "Welcome back",
+    "welcome-app": "Welcome back",
+    "welcome": "Welcome",
     "accept-agreement": "Should accept agreement",
     "agree": "I agree to the",
     "terms": "Terms of Service",
@@ -78,6 +79,7 @@
     "email_instructions": "to receive an email containing instructions on how to unlock your account",
     "invalid_password": "Password must contain at least one number, one uppercase letter, one lowercase letter, and one special character",
     "common_password": "Avoid choosing a common password",
+    "new-old-password":"New and old password must be different",
     "already_used_password": "New password cannot be the same as your old password",
     "success_change_password": "Password changed successfully",
     "error_change_password": "Password could not be changed",
@@ -220,6 +222,9 @@
         "required": "Please select a role",
         "placeholder": "Select a role"
     },
+    "state": {
+        "placeholder": "Select a state"
+    },
     "status": {
         "label": "State",
         "required": "Please select a state",
@@ -253,6 +258,7 @@
     "required_email": "Email is required",
     "required_role": "Please select a role",
     "required_status": "Please select a state",
+    "required_state": "Please select a visibility",
     "no_changes": "No changes made",
     "new_preset": "New Preset",
     "preset_name": {
@@ -302,6 +308,7 @@
     "room_recordings": "Room recordings",
     "attendees": "Attendees",
     "publish": "Publish",
+    "unpublish": "Unpublish",
     "replay": "Replay",
     "mb": "MB",
     "delete_room_confirm": "Are you sure to delete this room ?",
@@ -422,5 +429,7 @@
 
     "alwaysDeny": "Always deny",
 
-    "email-not-exist": "User does not exist with this email"
+    "email-not-exist": "User does not exist with this email",
+    "publish_record_success": "Recording published successfully",
+    "unpublish_record_success": "Recording unpublished successfully"
 }

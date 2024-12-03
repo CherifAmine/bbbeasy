@@ -4,15 +4,15 @@
  * Copyright (c) 2022-2023 RIADVICE SUARL and by respective authors (see below).
  *
  * This program is free software; you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License as published by the Free Software
+ * terms of the GNU Affero General Public License as published by the Free Software
  * Foundation; either version 3.0 of the License, or (at your option) any later
  * version.
  *
- * BBBEasy is distributed in the hope that it will be useful, but WITHOUT ANY
+ * BBBeasy is distributed in the hope that it will be useful, but WITHOUT ANY
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
- * PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
+ * PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License along
+ * You should have received a copy of the GNU Affero General Public License along
  * with BBBEasy; if not, see <http://www.gnu.org/licenses/>.
  */
 
@@ -31,16 +31,7 @@ type Props = {
 const ConfirmPassword = (props: Props) => {
     const { dependOn, confirmText } = props;
 
-    const confirmField = (dependValue: string, value: string) => {
-        if (!value) {
-            return new Error(t('confirm-password.required'));
-        } else {
-            if (dependValue === value) {
-                return null;
-            }
-            return new Error(t('passwords-not-match'));
-        }
-    };
+    
 
     return (
         <Form.Item
@@ -56,18 +47,16 @@ const ConfirmPassword = (props: Props) => {
                     required: true,
                     message: <Trans i18nKey="confirm-password.required" />,
                 },
-                ({ getFieldValue }) => ({
-                    validator(_, value) {
-                        if (dependOn && getFieldValue(dependOn)) {
-                            const error = confirmField(getFieldValue(dependOn), value);
-                            if (error) {
-                                return Promise.reject(error);
-                            }
-                        }
-                        return Promise.resolve();
-                    },
-                }),
-            ]}
+            
+           ({ getFieldValue }) => ({
+            validator(_, value) {
+              if (!value || getFieldValue('password') === value) {
+                return Promise.resolve();
+              }
+              return Promise.reject(new Error(t('passwords-not-match')));
+            },
+          }),
+        ]}
         >
             <PasswordInput placeholder="**********" />
         </Form.Item>

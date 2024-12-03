@@ -8,16 +8,16 @@ declare(strict_types=1);
  * Copyright (c) 2022-2023 RIADVICE SUARL and by respective authors (see below).
  *
  * This program is free software; you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License as published by the Free Software
+ * terms of the GNU Affero General Public License as published by the Free Software
  * Foundation; either version 3.0 of the License, or (at your option) any later
  * version.
  *
- * BBBEasy is distributed in the hope that it will be useful, but WITHOUT ANY
+ * BBBeasy is distributed in the hope that it will be useful, but WITHOUT ANY
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
- * PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
+ * PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License along
- * with BBBEasy; if not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Affero General Public License along
+ * with BBBeasy. If not, see <https://www.gnu.org/licenses/>
  */
 
 namespace Actions\Labels;
@@ -55,6 +55,7 @@ class Edit extends BaseAction
         if ($label->valid()) {
             $dataChecker = new DataChecker();
             $dataChecker->verify($form['name'], Validator::notEmpty()->setName('name'));
+            $dataChecker->verify($form['name'], Validator::length(1, 32)->setName('name'));
             $dataChecker->verify($form['color'], Validator::notEmpty()->setName('color'));
 
             if ($dataChecker->allValid()) {
@@ -64,6 +65,7 @@ class Edit extends BaseAction
                 $label->color       = $form['color'];
 
                 $colorExist = $checkLabel->colorExists($form['color'], $id);
+                // @fixme: ambiguous double cehck for $colorExist
                 if ($colorExist) {
                     if ($colorExist) {
                         $message = ['name' => $nameErrorMessage, 'color' => $colorErrorMessage];
@@ -86,7 +88,7 @@ class Edit extends BaseAction
                 }
 
                 $this->logger->info('Label successfully updated', ['Label' => $label->toArray()]);
-                $this->renderJson(['result' => 'success', 'label' => $label->getLabelInfos($label)]);
+                $this->renderJson(['result' => 'success', 'label' => $label->getLabelInfos()]);
             } else {
                 $this->logger->error($errorMessage, ['errors' => $dataChecker->getErrors()]);
                 $this->renderJson(['errors' => $dataChecker->getErrors()], ResponseCode::HTTP_UNPROCESSABLE_ENTITY);

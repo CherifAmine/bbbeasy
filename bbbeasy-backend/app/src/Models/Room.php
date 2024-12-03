@@ -8,16 +8,16 @@ declare(strict_types=1);
  * Copyright (c) 2022-2023 RIADVICE SUARL and by respective authors (see below).
  *
  * This program is free software; you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License as published by the Free Software
+ * terms of the GNU Affero General Public License as published by the Free Software
  * Foundation; either version 3.0 of the License, or (at your option) any later
  * version.
  *
- * BBBEasy is distributed in the hope that it will be useful, but WITHOUT ANY
+ * BBBeasy is distributed in the hope that it will be useful, but WITHOUT ANY
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
- * PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
+ * PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License along
- * with BBBEasy; if not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Affero General Public License along
+ * with BBBeasy. If not, see <https://www.gnu.org/licenses/>
  */
 
 namespace Models;
@@ -122,22 +122,22 @@ class Room extends BaseModel
         $rooms = $this->find([], ['order' => 'id']);
         if ($rooms) {
             foreach ($rooms as $room) {
-                $data[] = $room->getRoomInfos();
+                $data[] = $room->getRoomInfos($room);
             }
         }
 
         return $data;
     }
 
-    public function getRoomInfos($room): array
+    public function getRoomInfos(): array
     {
         return [
-            'id'         => $room->id,
-            'name'       => $room->name,
-            'preset_id'  => $room->getPresetID($this->id)['preset_id'],
-            'user_id'    => $room->getUserID($this->id)['user_id'],
-            'short_link' => $room->short_link,
-            'labels'     => $room->getLabels($room->id),
+            'id'         => $this->id,
+            'name'       => $this->name,
+            'preset_id'  => $this->getPresetID($this->id)['preset_id'],
+            'user_id'    => $this->getUserID($this->id)['user_id'],
+            'short_link' => $this->short_link,
+            'labels'     => $this->getLabels($this->id),
         ];
     }
 
@@ -206,11 +206,13 @@ class Room extends BaseModel
         $this->logger->info('Received request to fetch recordings', ['meetingID' => $meetingId]);
 
         $recordingsResponse = $bbbRequester->getRecordings($recordingsParams);
+
         if ($recordingsResponse->success() && \count($recordingsResponse->getRecords()) > 0) {
             $recordingsData = [];
             $recordings     = $recordingsResponse->getRawXml()->recordings;
+            $recordings     = $recordings[0];
+
             foreach ($recordings as $recording) {
-                $recording = $recording->recording;
                 $bbbRecord = new Record($recording);
 
                 $recordingsData[] = $this->getRecordingInfo($bbbRecord, (array) $recording->participants);
@@ -247,8 +249,9 @@ class Room extends BaseModel
     public function getRecordingInfo(Record $record, array $attendees): array
     {
         $recordingId = $record->getRecordId();
-        if (\array_key_exists('HVname', $record->getMetas())) {
-            $recordingName = $record->getMetas()['HVname'];
+
+        if (\array_key_exists('name', $record->getMetas())) {
+            $recordingName = $record->getMetas()['name'];
         } else {
             $recordingName = $record->getName();
         }

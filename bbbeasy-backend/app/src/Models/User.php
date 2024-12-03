@@ -8,16 +8,16 @@ declare(strict_types=1);
  * Copyright (c) 2022-2023 RIADVICE SUARL and by respective authors (see below).
  *
  * This program is free software; you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License as published by the Free Software
+ * terms of the GNU Affero General Public License as published by the Free Software
  * Foundation; either version 3.0 of the License, or (at your option) any later
  * version.
  *
- * BBBEasy is distributed in the hope that it will be useful, but WITHOUT ANY
+ * BBBeasy is distributed in the hope that it will be useful, but WITHOUT ANY
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
- * PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
+ * PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License along
- * with BBBEasy; if not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Affero General Public License along
+ * with BBBeasy. If not, see <https://www.gnu.org/licenses/>
  */
 
 namespace Models;
@@ -59,7 +59,7 @@ class User extends BaseModel
     public function __construct($db = null, $table = null, $fluid = null, $ttl = 0)
     {
         parent::__construct($db, $table, $fluid, $ttl);
-        $this->onset('password', fn ($self, $value) => password_hash($value, PASSWORD_BCRYPT));
+        $this->onset('password', static fn ($self, $value) => password_hash($value, PASSWORD_BCRYPT));
         $this->virtual('role', fn () => $this->role_id);
     }
 
@@ -115,6 +115,17 @@ class User extends BaseModel
     public function usernameExists(string $username, $id = null): bool
     {
         return $this->load(['lower(username) = ? and  id != ?', mb_strtolower($username), $id]);
+    }
+
+    public function getUsers($username, $email)
+    {
+        $data  = [];
+        $users = $this->find(['username !=  ? and email != ? ', $username, $email]);
+        if ($users) {
+            $data = $users->castAll(['username', 'email', 'password']);
+        }
+
+        return $data;
     }
 
     /**
@@ -230,7 +241,7 @@ class User extends BaseModel
             $this->password_attempts = 3;
 
             $this->save();
-            $userId = $this->getByEmail($email)->id;
+            $this->getById($this->lastInsertId());
         } catch (\Exception $e) {
             $this->logger->error($errorMessage, ['user' => $this->toArray(), 'error' => $e->getMessage()]);
 

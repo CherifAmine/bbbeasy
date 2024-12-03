@@ -8,16 +8,16 @@ declare(strict_types=1);
  * Copyright (c) 2022-2023 RIADVICE SUARL and by respective authors (see below).
  *
  * This program is free software; you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License as published by the Free Software
+ * terms of the GNU Affero General Public License as published by the Free Software
  * Foundation; either version 3.0 of the License, or (at your option) any later
  * version.
  *
- * BBBEasy is distributed in the hope that it will be useful, but WITHOUT ANY
+ * BBBeasy is distributed in the hope that it will be useful, but WITHOUT ANY
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
- * PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
+ * PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License along
- * with BBBEasy; if not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Affero General Public License along
+ * with BBBeasy. If not, see <https://www.gnu.org/licenses/>
  */
 
 namespace Models;
@@ -47,9 +47,11 @@ class Label extends BaseModel
     /**
      * Get label record by id value.
      *
+     * @param mixed $id
+     *
      * @return $this
      */
-    public function getById(int $id): self
+    public function getById($id): self
     {
         $this->load(['id = ?', $id]);
 
@@ -92,21 +94,41 @@ class Label extends BaseModel
         $labels = $this->find([], ['order' => 'id']);
         if ($labels) {
             foreach ($labels as $label) {
-                $data[] = $label->getLabelInfos($label);
+                $data[] = $label->getLabelInfos();
             }
         }
 
         return $data;
     }
 
-    public function getLabelInfos($label): array
+    public function saveLabel($name, $description, $color, $successMessage, $errorMessage): bool|string
+    {
+        try {
+            $this->name        = $name;
+            $this->description = $description;
+            $this->color       = $color;
+
+            $this->save();
+            $this->getByColor($color);
+        } catch (\Exception $e) {
+            $this->logger->error($errorMessage, ['label' => $this->toArray(), 'error' => $e->getMessage()]);
+
+            return false;
+        }
+
+      $this->logger->info($successMessage, ['label' => $this->toArray()]);
+
+        return true;
+    }
+
+    public function getLabelInfos(): array
     {
         return [
-            'key'         => $label->id,
-            'name'        => $label->name,
-            'description' => $label->description,
-            'color'       => $label->color,
-            'nb_rooms'    => \count($label->getRooms($label->id)),
+            'key'         => $this->id,
+            'name'        => $this->name,
+            'description' => $this->description,
+            'color'       => $this->color,
+            'nb_rooms'    => \count($this->getRooms($this->id)),
         ];
     }
 
