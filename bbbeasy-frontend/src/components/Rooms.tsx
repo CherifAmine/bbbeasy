@@ -39,6 +39,7 @@ import { RoomType } from 'types/RoomType';
 import { PresetType } from 'types/PresetType';
 import { LabelType } from 'types/LabelType';
 import { getRandomString } from 'types/getRandomString';
+import NotificationManager from "./NotificationManager";
 
 const { Title, Paragraph } = Typography;
 
@@ -53,13 +54,24 @@ const RoomsCol: React.FC<RoomsColProps> = ({ index, room, editable, deleteClickH
     const [isShown, setIsShown] = useState<boolean>(false);
     const labels = [];
     const navigate = useNavigate();
+    const warningNotification = NotificationManager.getWarningNotification();
+
     room.labels.map((item) => {
         labels.push(item);
     });
 
     //view
     const showRoomDetails = () => {
-        navigate('/r/' + room.short_link, { state: { room: room, editable: editable } });
+        if(warningNotification){
+            Notifications.openNotificationWithIcon(
+                'error',
+                <>
+                    <Trans i18nKey="ErrorBBBConfig" />
+                </>
+            );
+        }else{
+            navigate('/r/' + room.short_link, { state: { room: room, editable: editable } });
+        }
     };
 
     //delete

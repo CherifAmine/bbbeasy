@@ -58,6 +58,7 @@ import notificationService from '../../services/notification.service';
 import settingsService from 'services/settings.service';
 import { SettingsType } from 'types/SettingsType';
 import { apiRoutes } from 'routing/backend-config';
+import NotificationManager from "../NotificationManager";
 
 const { Header } = Layout;
 const { Title, Text, Paragraph } = Typography;
@@ -71,13 +72,14 @@ const AppHeader = () => {
 
     const dataContext = React.useContext(DataContext);
     const [rooms, setRooms] = React.useState<RoomType[]>(dataContext.dataRooms);
-    const [warningNotification, setWarningNotification] = useState<boolean>(false);
     const [isModalVisible, setIsModalVisible] = React.useState<boolean>(false);
     const location = useLocation();
     const [searchForm] = Form.useForm();
     const isRoomsSearch = location.pathname.includes('rooms');
     const [logo, setLogo] = React.useState<string>('');
     const isLoginPage = location.pathname.includes('login');
+    const warningNotification = NotificationManager.getWarningNotification();
+
     if (isLoginPage) {
         setIsLogged(false);
     }
@@ -124,18 +126,6 @@ const AppHeader = () => {
         setRooms(data);
         setIsModalVisible(true);
     };
-
-    useEffect(() => {
-        notificationService
-            .collect_notification()
-            .then((response) => {
-                setWarningNotification(true);
-                console.log(response.data);
-            })
-            .catch((error) => {
-                console.error(error);
-            });
-    }, []);
 
     const menuLang = (
         <Menu>

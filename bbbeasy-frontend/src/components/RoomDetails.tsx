@@ -54,6 +54,7 @@ import { PresetType } from 'types/PresetType';
 import { LabelType } from 'types/LabelType';
 import { UserType } from '../types/UserType';
 import NoData from './NoData';
+import NotificationManager from "./NotificationManager";
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -113,6 +114,8 @@ const RoomDetails = () => {
     const [open, setOpen] = React.useState<boolean>(false);
     const [roomRecordings, setRoomRecordings] = React.useState<RecordingType[]>([]);
     const [loading, setLoading] = React.useState<boolean>(false);
+    const warningNotification = NotificationManager.getWarningNotification();
+
     const validateMessages = {
         name: {
             maxSize: t('room_name.maxSize'),
@@ -152,11 +155,20 @@ const RoomDetails = () => {
                     window.open(result.data, '_self');
                 })
                 .catch((error) => {
-                    console.log(error.response.data);
-                    Notifications.openNotificationWithIcon(
-                        'error',
-                        t(Object.keys(EN_US).filter((elem) => EN_US[elem] === error.response.data.meeting))
-                    );
+                    const errorKey = error.response.data.meeting;
+                    if (errorKey && EN_US[errorKey]) {
+                        Notifications.openNotificationWithIcon(
+                            'error',
+                            t(Object.keys(EN_US).filter((elem) => EN_US[elem] === errorKey))
+                        );
+                    } else {
+                        Notifications.openNotificationWithIcon(
+                            'error',
+                            <>
+                                <Trans i18nKey="ErrorBBBConfig" />
+                            </>
+                        );
+                    }
                 });
         } catch (errInfo) {
             console.log('could not start or join the meeting :', errInfo);
@@ -217,8 +229,12 @@ const RoomDetails = () => {
                 }
             })
             .catch((error) => {
-                console.log(error);
-                navigate('/login');
+                Notifications.openNotificationWithIcon(
+                    'error',
+                    <>
+                        <Trans i18nKey="Cannot_start_or_join_meeting" />
+                    </>
+                );
             })
             .finally(() => {
                 setIsLoading(false);
@@ -226,10 +242,21 @@ const RoomDetails = () => {
     };
 
     useEffect(() => {
-        //Runs only on the first render
-        checkRoomStarted();
-        getPresets();
-        getLabels();
+        if(warningNotification){
+            window.location.href = '/rooms';
+            Notifications.openNotificationWithIcon(
+                'error',
+                <>
+                    <Trans i18nKey="ErrorBBBConfig" />
+                </>
+            );
+        } else {
+            //Runs only on the first render
+            checkRoomStarted();
+            getPresets();
+            getLabels();
+        }
+
     }, []);
 
     //edit

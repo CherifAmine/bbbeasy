@@ -44,6 +44,7 @@ import { LabelType } from 'types/LabelType';
 import { PresetType } from 'types/PresetType';
 import { UserType } from './types/UserType';
 import { SessionType } from './types/SessionType';
+import NotificationManager from './components/NotificationManager';
 
 const { Content } = Layout;
 
@@ -163,6 +164,10 @@ const App: React.FC<IProps> = ({ routes, isSider, logs }) => {
             }
         }
     }, [getRooms, getLabels, getPresets, logs]);
+
+    useEffect(() => {
+        NotificationManager.fetchNotification();
+    }, []);
 
     return (
         <StyleProvider hashPriority="high" transformers={[legacyLogicalPropertiesTransformer]}>

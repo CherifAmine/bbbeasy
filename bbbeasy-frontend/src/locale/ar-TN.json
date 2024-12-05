@@ -414,5 +414,8 @@
 
     "email-not-exist": "المستخدم غير موجود مع هذا البريد الإلكتروني",
     "publish_record_success": "تم نشر التسجيل بنجاح",
-    "unpublish_record_success": "تم إلغاء نشر التسجيل بنجاح"
+    "unpublish_record_success": "تم إلغاء نشر التسجيل بنجاح",
+    "ErrorBBBConfig": "لا يمكن الوصول إلى الغرفة لأن تكوين BigBlueButton مفقود",
+    "Cannot_start_or_join_meeting": "لا يمكن بدء الاجتماع أو الانضمام إليه"
+
 }
