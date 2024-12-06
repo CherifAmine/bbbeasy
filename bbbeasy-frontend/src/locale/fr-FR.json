@@ -414,6 +414,8 @@
     "publish_record_success": "Enregistrement publié avec succès",
     "unpublish_record_success": "L'enregistrement a été inédit avec succès",
     "ErrorBBBConfig": "La salle n'est pas accessible car la configuration BigBlueButton est manquante",
-    "Cannot_start_or_join_meeting": "Impossible de démarrer ou de rejoindre la réunion"
+    "Cannot_start_or_join_meeting": "Impossible de démarrer ou de rejoindre la réunion",
+    "warning": "Avertissement",
+    "close": "Fermer"
 
 }

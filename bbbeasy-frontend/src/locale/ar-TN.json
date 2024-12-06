@@ -416,6 +416,9 @@
     "publish_record_success": "تم نشر التسجيل بنجاح",
     "unpublish_record_success": "تم إلغاء نشر التسجيل بنجاح",
     "ErrorBBBConfig": "لا يمكن الوصول إلى الغرفة لأن تكوين BigBlueButton مفقود",
-    "Cannot_start_or_join_meeting": "لا يمكن بدء الاجتماع أو الانضمام إليه"
+    "Cannot_start_or_join_meeting": "لا يمكن بدء الاجتماع أو الانضمام إليه",
+    "warning": "تحذير",
+    "close": "إغلاق"
+
 
 }

@@ -55,6 +55,7 @@ import { LabelType } from 'types/LabelType';
 import { UserType } from '../types/UserType';
 import NoData from './NoData';
 import NotificationManager from "./NotificationManager";
+import { Modal } from 'antd';
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -115,6 +116,8 @@ const RoomDetails = () => {
     const [roomRecordings, setRoomRecordings] = React.useState<RecordingType[]>([]);
     const [loading, setLoading] = React.useState<boolean>(false);
     const warningNotification = NotificationManager.getWarningNotification();
+
+    const [startMeeting, setStartMeeting] = useState(true);
 
     const validateMessages = {
         name: {
@@ -229,12 +232,19 @@ const RoomDetails = () => {
                 }
             })
             .catch((error) => {
-                Notifications.openNotificationWithIcon(
-                    'error',
-                    <>
-                        <Trans i18nKey="Cannot_start_or_join_meeting" />
-                    </>
-                );
+                setStartMeeting(false);
+                if (currentUser == null) {
+                    Modal.confirm({
+                        title: <Trans i18nKey="warning" />,
+                        content: <Trans i18nKey="Cannot_start_or_join_meeting" />,
+                        cancelButtonProps: { style: { display: 'none' } },
+                        okButtonProps: { style: { backgroundColor: '#fbbc0b', color: '#fff' } },
+                        okText: <Trans i18nKey="close" />,
+                        onOk: () => {
+                            navigate('/rooms');
+                        },
+                    });
+                }
             })
             .finally(() => {
                 setIsLoading(false);
@@ -242,7 +252,7 @@ const RoomDetails = () => {
     };
 
     useEffect(() => {
-        if(warningNotification){
+        if(warningNotification && startMeeting){
             window.location.href = '/rooms';
             Notifications.openNotificationWithIcon(
                 'error',

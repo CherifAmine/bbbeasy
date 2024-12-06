@@ -434,6 +434,7 @@
     "publish_record_success": "Recording published successfully",
     "unpublish_record_success": "Recording unpublished successfully",
     "ErrorBBBConfig": "The room cannot be accessed because the BBB configuration is missing",
-    "Cannot_start_or_join_meeting": "The meeting cannot be started or joined"
-
+    "Cannot_start_or_join_meeting": "The meeting cannot be started or joined",
+    "warning": "Warning",
+    "close": "Close"
 }
